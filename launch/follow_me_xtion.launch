@@ -1,0 +1,21 @@
+<launch>
+  <arg name="port_robot" default="/dev/serial/by-id/usb-T-frog_project_T-frog_Driver-if00" />
+  <arg name="robot_param" default="$(env HOME)/params/rsj-seminar2016.param"/>
+  
+  <node pkg="tf" type="static_transform_publisher" name="stp_laser" args="0 0 0 0 0 0 base_link camera_link 100" />
+
+  <node pkg="ypspur_ros" type="ypspur_ros" name="ypspur_ros" respawn="true">
+    <param name="port" value="$(arg port_robot)" />
+    <param name="param_file" value="$(arg robot_param)" />
+    <param name="compatible" value="1"/>
+  </node>
+  
+  <include file="$(find rsj_pointcloud_to_laserscan)/launch/rsj_pointcloud_to_laserscan.launch" />
+
+  <node pkg="rsj_pointcloud_test" type="rsj_pointcloud_test_node" name="rsj_pointcloud_test_node">
+    <param name="target_frame" value="camera_link" />
+    <param name="topic_name" value="/camera/depth_registered/points" />
+  </node>
+  <node pkg="rsj_robot_test" type="rsj_robot_test_node" name="rsj_robot_test_node"/>
+  <node pkg="rviz" type="rviz" args="-d '$(find rsj_custom_launchers)/config/rviz/follow_me.rviz'" name="visualizer" required="true" />
+</launch>

@@ -15,5 +15,7 @@
     <param name="serial_port" value="$(arg port_urg)" />
   </node>
 
+  <node pkg="rsj_robot_test" type="rsj_robot_test_node" name="rsj_robot_test_node"/>
+
   <node pkg="rviz" type="rviz" args="-d '$(find rsj_custom_launchers)/config/rviz/follow_me.rviz'" name="visualizer" required="true" />
 </launch>
