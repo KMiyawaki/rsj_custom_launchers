@@ -1,0 +1,19 @@
+<launch>
+  <arg name="port_urg" default="/dev/serial/by-id/usb-Hokuyo_Data_Flex_for_USB_URG-Series_USB_Driver-if00" />
+  <arg name="port_robot" default="/dev/serial/by-id/usb-T-frog_project_T-frog_Driver-if00" />
+  <arg name="robot_param" default="$(env HOME)/params/rsj-seminar2016.param"/>
+  
+  <node pkg="tf" type="static_transform_publisher" name="stp_laser" args="0 0 0 0 0 0 base_link laser 100" />
+
+  <node pkg="ypspur_ros" type="ypspur_ros" name="ypspur_ros" respawn="true">
+    <param name="port" value="$(arg port_robot)" />
+    <param name="param_file" value="$(arg robot_param)" />
+    <param name="compatible" value="1"/>
+  </node>
+  
+  <node pkg="urg_node" type="urg_node" name="urg_node">
+    <param name="serial_port" value="$(arg port_urg)" />
+  </node>
+
+  <node pkg="rviz" type="rviz" args="-d '$(find rsj_custom_launchers)/config/rviz/follow_me.rviz'" name="visualizer" required="true" />
+</launch>
